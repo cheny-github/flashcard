@@ -1,5 +1,5 @@
+
 import { Card } from '../types';
-import { INITIAL_DATA } from '../constants';
 
 const STORAGE_KEY = 'reguflash_data_v1';
 
@@ -20,10 +20,10 @@ export const loadCards = (): Card[] => {
   } catch (e) {
     console.error('Failed to load cards', e);
   }
-  return INITIAL_DATA;
+  return [];
 };
 
 export const resetData = () => {
     localStorage.removeItem(STORAGE_KEY);
-    return INITIAL_DATA;
+    return [];
 }

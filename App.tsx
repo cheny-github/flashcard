@@ -175,7 +175,7 @@ const App: React.FC = () => {
   };
 
   const handleReset = () => {
-      if(window.confirm("Are you sure you want to reset to the original textbook data? This will erase all progress.")) {
+      if(window.confirm("Are you sure you want to clear all data? This cannot be undone.")) {
         const defaultData = resetData();
         setCards(defaultData);
         setCurrentIndex(0);
@@ -240,9 +240,27 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 max-w-5xl mx-auto w-full p-4 sm:p-6 flex flex-col">
-        {cards.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
-            <p>No cards available. Go to Editor to add data.</p>
+        {mode === 'editor' ? (
+          <div className="animate-in fade-in duration-300 h-full">
+            <Editor 
+                initialData={cards} 
+                onSave={handleSaveData} 
+                onAppend={handleAppendData}
+                onReset={handleReset}
+            />
+          </div>
+        ) : cards.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-4">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
+                <BookOpen size={32} className="text-slate-300" />
+            </div>
+            <p>No cards available.</p>
+            <button 
+              onClick={() => setMode('editor')}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2 shadow-sm"
+            >
+              <Edit3 size={16} /> Go to Editor to Add Data
+            </button>
           </div>
         ) : (
           <>
@@ -398,18 +416,6 @@ const App: React.FC = () => {
             {mode === 'list' && (
               <div className="animate-in fade-in duration-300">
                 <CardList cards={cards} />
-              </div>
-            )}
-
-            {/* EDITOR MODE */}
-            {mode === 'editor' && (
-              <div className="animate-in fade-in duration-300 h-full">
-                <Editor 
-                    initialData={cards} 
-                    onSave={handleSaveData} 
-                    onAppend={handleAppendData}
-                    onReset={handleReset}
-                />
               </div>
             )}
           </>
