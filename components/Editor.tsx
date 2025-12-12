@@ -31,7 +31,7 @@ Example:
   }
 ]
 
-Please convert the following text into this JSON format:
+Please convert the following text in chinese into this JSON format:
 
 [PASTE YOUR CONTENT HERE]`;
 
