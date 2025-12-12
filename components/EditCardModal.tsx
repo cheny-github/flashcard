@@ -1,15 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card } from '../types';
-import { Save, X } from 'lucide-react';
+import { Save, X, Plus, Check } from 'lucide-react';
 
 interface EditCardModalProps {
   card: Card;
+  availableTags?: string[];
   onSave: (updatedCard: Card) => void;
   onCancel: () => void;
 }
 
-export const EditCardModal: React.FC<EditCardModalProps> = ({ card, onSave, onCancel }) => {
+export const EditCardModal: React.FC<EditCardModalProps> = ({ card, availableTags = [], onSave, onCancel }) => {
   const [formData, setFormData] = useState<Card>({ ...card });
   const [detailsText, setDetailsText] = useState('');
   const [tagsText, setTagsText] = useState('');
@@ -48,6 +49,22 @@ export const EditCardModal: React.FC<EditCardModalProps> = ({ card, onSave, onCa
     });
   };
 
+  const toggleTag = (tag: string) => {
+    const currentTags = tagsText.split(',').map(t => t.trim()).filter(t => t.length > 0);
+    let newTags: string[];
+    
+    if (currentTags.includes(tag)) {
+      newTags = currentTags.filter(t => t !== tag);
+    } else {
+      newTags = [...currentTags, tag];
+    }
+    
+    setTagsText(newTags.join(', '));
+  };
+
+  // Parse current tags to check active state for badges
+  const activeTagsSet = new Set(tagsText.split(',').map(t => t.trim()));
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -81,6 +98,32 @@ export const EditCardModal: React.FC<EditCardModalProps> = ({ card, onSave, onCa
               placeholder="e.g. difficult, chapter1, important"
               className="w-full p-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 text-sm"
             />
+            {availableTags.length > 0 && (
+              <div className="mt-2">
+                <p className="text-[10px] text-slate-400 mb-1.5 uppercase font-medium">Quick Select Existing Tags:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {availableTags.map(tag => {
+                    const isActive = activeTagsSet.has(tag);
+                    return (
+                      <button
+                        key={tag}
+                        onClick={() => toggleTag(tag)}
+                        className={`
+                          flex items-center gap-1 px-2 py-1 rounded-md text-xs border transition-all
+                          ${isActive 
+                            ? 'bg-blue-100 border-blue-200 text-blue-700 hover:bg-blue-200' 
+                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                          }
+                        `}
+                      >
+                        {isActive ? <Check size={10} /> : <Plus size={10} />}
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div>

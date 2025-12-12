@@ -419,6 +419,7 @@ const App: React.FC = () => {
         {editingCard && (
           <EditCardModal 
             card={editingCard} 
+            availableTags={uniqueTags}
             onSave={handleUpdateCard} 
             onCancel={() => setEditingCard(null)} 
           />
